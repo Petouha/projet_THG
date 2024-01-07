@@ -30,28 +30,18 @@ def create_sudoku_empty(taille):
         dico[i] = sublist
     return liste_successeurs(deTLaM(dico)) 
 
-# list = create_sudoku_empty(3)
+    
+def solve_sudoku(graph):
+    taille = np.shape(graph)[0]
+    for i in range(taille):
+        for j in range(taille):
+            graph[i][j]=graph[i][j]-1
+        
 
+    liste = create_sudoku_empty(int(math.sqrt(taille)))
+    solved = list_to_graph(Backtracking(liste,taille,list(graph.flatten())))
 
-
-# print("----------------------")
-# print(list)
-# print("----------------------")
-# colors = []
-
-# for i in range(81):
-#     colors.append(-1)
-
-# colors[44] = -1
-# colors[1]=7
-
-
-# print(colors)
-
-# #print(list_to_graph(Backtracking(test,9,colors)))
-# print("\n")
-# print(list_to_graph(Backtracking(list,9,0)))
-
-
-# #greedyColoring(list,4)
-
+    for i in range(np.shape(solved)[0]):
+        for j in range(np.shape(solved)[0]):
+            solved[i][j]=solved[i][j]+1
+    return solved
