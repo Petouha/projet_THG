@@ -1,102 +1,84 @@
 import numpy as np
-import math
-
-def list_to_graph(lst):
-    taille = int(math.sqrt(len(lst)))
-    graph = np.zeros((taille, taille))
-    i = 0
-    for j in range(len(lst)):
-        i = j // taille
-        graph[i][j % taille] = lst[j]
-    return graph
-
-
-def liste_successeurs(graph):
-    list_succ = []
-    for i in range(len(graph)):
-        list_succ.append(successeurs(graph,i+1))
-    return list_succ
-
-
-def successeurs(graph,sommet):
-    if len(graph) < sommet:
-        return 0
-    
-    temp=(graph[sommet-1])
-    
-    liste_successeurs=[]
-    for index,element in enumerate(temp):
-        if(element==1):
-            liste_successeurs.append(index+1)
-    return liste_successeurs
+from src.tools import *
 
 def peutColorier(graph,colors,sommet,color):
-    #Teste pour chaque voisins du sommet s'il a la même couleur
-    #Return vrai si aucun des sommets adjacents est colorié de cette manière
+    # Test if any neighbors of the vertex have the same color
+    # Return true if none of the adjacent vertices are colored this way
     for element in graph[sommet-1]:
         if(colors[element -1] == color):
             return False
-        
     return True
 
 def testerBackTracking(graph, color_nbr, colors, sommet):
-    #condition d'arret
-    #Si on arrive au sommet n+1, c'est qu'on a pu faire tous les autres
-    
-    if sommet == len(graph)+1:
+    # Stop condition: if we reach vertex n+1, we've successfully colored all vertices
+    if sommet == len(graph) + 1:
         return True
-    #on boucle sur toute les couleurs, une a une
-    for c in range(color_nbr):
-        #on teste si on peut colorier le sommet actuel avec la couleur c
-        if (peutColorier(graph,colors,sommet,c) == True):
-            #Cas de True:
-                #on met la couleur du sommet à c
-            colors[sommet-1] = c
-            #on teste si pour le sommet+1 il existe une solution, sinon remonte et refais avec une autre couleur
-            if testerBackTracking(graph,color_nbr,colors,sommet+1) == True:
-                return True
-            #On a pas trouver de solution avec la couleur c, on remet la couleur du sommet à -1
-            colors[sommet-1] = -1
-    
 
-def Backtracking(graph, color_nbr):
-    colors = [-1] * len(graph)
+    # Skip the vertex if it already has a pre-assigned color (not -1)
+    if colors[sommet - 1] != -1:
+        return testerBackTracking(graph, color_nbr, colors, sommet + 1)
+
+    # Try each color for the current vertex
+    for c in range(color_nbr):
+        # Check if the current vertex can be colored with color c
+        if peutColorier(graph, colors, sommet, c):
+            colors[sommet - 1] = c  # Assign color c to the vertex
+            # Recursively try to color the next vertex
+            if testerBackTracking(graph, color_nbr, colors, sommet + 1):
+                return True
+            # No solution found with color c, reset the vertex color to -1
+            colors[sommet - 1] = -1
+    return False
+
+def Backtracking(graph, color_nbr, colors):
+    if not colors:
+        colors = [-1] * len(graph)
     sommet = 1
-    if testerBackTracking( graph, color_nbr , colors , sommet) == None :
-        print("impossible")
+    if testerBackTracking(graph, color_nbr, colors, sommet) == None:
+        print("Impossible to find a solution")
         return None
     return colors
-        
-
-graph = np.array([[0, 1, 0, 0, 1, 1, 1], 
-[1, 0, 1, 1, 0, 0, 0], 
-[0, 1, 0, 1, 0, 0, 1], 
-[0, 1, 1, 0, 1, 0, 0], 
-[1, 0, 0, 1, 0, 1, 1], 
-[1, 0, 0, 0, 1, 0, 1], 
-[1, 0, 1, 0, 1, 1, 0 ]])
-
-graph2 = np.array([[0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0,],
- [1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0,],
- [1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0,],
- [1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1,],
- [1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0,],
- [1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0,],
- [0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0,],
- [0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1,],
- [1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0,],
- [0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0,],
- [0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1,],
- [0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1,],
- [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1,],
- [0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1,],
- [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1,],
- [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0,]])
-
-print(graph2)
 
 
-list_succ = liste_successeurs(graph2)
+# graph = np.array([[0, 1, 0, 0, 1, 1, 1], 
+# [1, 0, 1, 1, 0, 0, 0], 
+# [0, 1, 0, 1, 0, 0, 1], 
+# [0, 1, 1, 0, 1, 0, 0], 
+# [1, 0, 0, 1, 0, 1, 1], 
+# [1, 0, 0, 0, 1, 0, 1], 
+# [1, 0, 1, 0, 1, 1, 0 ]])
+
+# graph2 = np.array([[0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0,],
+#  [1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0,],
+#  [1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0,],
+#  [1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1,],
+#  [1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0,],
+#  [1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0,],
+#  [0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0,],
+#  [0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1,],
+#  [1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0,],
+#  [0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0,],
+#  [0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1,],
+#  [0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1,],
+#  [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1,],
+#  [0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1,],
+#  [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1,],
+#  [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0,]])
+
+# #print(graph2)
 
 
-print(list_to_graph(Backtracking(list_succ,4)))
+# list_succ = liste_successeurs(graph2)
+
+# colors = []
+
+# for i in range(16):
+#     colors.append(-1)
+
+# colors[0]=3
+# colors[5]=0
+# colors[10]=1
+# colors[7]=1
+# colors[15]=2
+
+# print(list_to_graph(Backtracking(list_succ,4,colors)))
