@@ -1,7 +1,6 @@
 import numpy as np
-import math
 from src.backtracking_clean import *
-from src.greedy import *
+
 
 def create_sudoku_empty(taille):
     
@@ -26,38 +25,33 @@ def create_sudoku_empty(taille):
             sublist = list(set(sublist))
             liste.append(sublist)
             
-    return liste
+    dico = {}
+    for i, sublist in enumerate(liste):
+        dico[i] = sublist
+    return liste_successeurs(deTLaM(dico)) 
 
-def deTLaM(dico):
-    num_nodes = len(dico)
-    M = np.zeros((num_nodes, num_nodes))
-
-    for node, successors in dico.items():
-        for successor in successors:
-            M[node, successor] = 1
-
-    return M
+# list = create_sudoku_empty(3)
 
 
-def list_to_graph(lst):
-    taille = int(math.sqrt(len(lst)))
-    graph = np.zeros((taille, taille))
-    i = 0
-    for j in range(len(lst)):
-        i = j // taille
-        graph[i][j % taille] = lst[j]
-    return graph
-            
 
-list = create_sudoku_empty(3)
+# print("----------------------")
+# print(list)
+# print("----------------------")
+# colors = []
 
-dico = {}
-for i, sublist in enumerate(list):
-    dico[i] = sublist
+# for i in range(81):
+#     colors.append(-1)
 
-test = (liste_successeurs(deTLaM(dico)))
+# colors[44] = -1
+# colors[1]=7
 
-print(list_to_graph(Backtracking(test,9)))
 
-#greedyColoring(list,4)
+# print(colors)
+
+# #print(list_to_graph(Backtracking(test,9,colors)))
+# print("\n")
+# print(list_to_graph(Backtracking(list,9,0)))
+
+
+# #greedyColoring(list,4)
 

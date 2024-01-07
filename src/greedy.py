@@ -1,15 +1,5 @@
 import numpy as np
-
-
-def successeurs(graph,indice):
-    if np.shape(graph)[0] < indice:
-        return 0
-    temp=(graph[indice-1])
-    liste_successeurs=[]
-    for index,element in enumerate(temp):
-        if(element==1):
-            liste_successeurs.append(index+1)
-    return liste_successeurs
+from src.tools import *
 
 def greedyColoring(liste_suc, number):
      
