@@ -1,5 +1,5 @@
 import numpy as np
-from backtracking_clean import liste_successeurs
+
 
 def successeurs(graph,indice):
     if np.shape(graph)[0] < indice:

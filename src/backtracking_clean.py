@@ -1,4 +1,15 @@
 import numpy as np
+import math
+
+def list_to_graph(lst):
+    taille = int(math.sqrt(len(lst)))
+    graph = np.zeros((taille, taille))
+    i = 0
+    for j in range(len(lst)):
+        i = j // taille
+        graph[i][j % taille] = lst[j]
+    return graph
+
 
 def liste_successeurs(graph):
     list_succ = []
@@ -53,9 +64,8 @@ def Backtracking(graph, color_nbr):
     sommet = 1
     if testerBackTracking( graph, color_nbr , colors , sommet) == None :
         print("impossible")
-        return False
-    print(colors)
-    return True
+        return None
+    return colors
         
 
 graph = np.array([[0, 1, 0, 0, 1, 1, 1], 
@@ -66,10 +76,27 @@ graph = np.array([[0, 1, 0, 0, 1, 1, 1],
 [1, 0, 0, 0, 1, 0, 1], 
 [1, 0, 1, 0, 1, 1, 0 ]])
 
-list_succ = []
+graph2 = np.array([[0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0,],
+ [1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0,],
+ [1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0,],
+ [1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1,],
+ [1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0,],
+ [1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0,],
+ [0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0,],
+ [0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1,],
+ [1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0,],
+ [0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0,],
+ [0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1,],
+ [0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1,],
+ [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1,],
+ [0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1,],
+ [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1,],
+ [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0,]])
+
+print(graph2)
 
 
-print(list_succ)
+list_succ = liste_successeurs(graph2)
 
 
-Backtracking(list_succ,4)
+print(list_to_graph(Backtracking(list_succ,4)))
