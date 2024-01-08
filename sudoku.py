@@ -32,6 +32,10 @@ def create_sudoku_empty(taille):
 
     
 def solve_sudoku(graph):
+    
+    if not is_valid_sudoku(graph):
+        return None
+    
     taille = np.shape(graph)[0]
     for i in range(taille):
         for j in range(taille):
@@ -48,3 +52,25 @@ def solve_sudoku(graph):
         for j in range(np.shape(solved)[0]):
             solved[i][j]=solved[i][j]+1
     return solved
+
+def is_valid_sudoku(grid):
+    size = np.shape(grid)[0]
+    for i in range(size):
+        # Check each row
+        if not is_valid_group(grid[i, :]):
+            return False
+        # Check each column
+        if not is_valid_group(grid[:, i]):
+            return False
+
+    # Check each 3x3 subgrid
+    for i in range(0, size, 3):
+        for j in range(0, size, 3):
+            if not is_valid_group(grid[i:i+3, j:j+3].flatten()):
+                return False
+
+    return True
+
+def is_valid_group(group):
+    group = [num for num in group if num != 0]  # Remove zeros (empty cells)
+    return len(group) == len(set(group))
