@@ -41,6 +41,9 @@ def solve_sudoku(graph):
     liste = create_sudoku_empty(int(math.sqrt(taille)))
     solved = list_to_graph(Backtracking(liste,taille,list(graph.flatten())))
 
+    if solved is None:
+        return None
+    
     for i in range(np.shape(solved)[0]):
         for j in range(np.shape(solved)[0]):
             solved[i][j]=solved[i][j]+1

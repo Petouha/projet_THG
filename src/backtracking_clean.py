@@ -34,7 +34,7 @@ def Backtracking(graph, color_nbr, colors):
     if not colors:
         colors = [-1] * len(graph)
     sommet = 1
-    if testerBackTracking(graph, color_nbr, colors, sommet) == None:
+    if testerBackTracking(graph, color_nbr, colors, sommet) == False:
         print("Impossible to find a solution")
         return None
     return colors

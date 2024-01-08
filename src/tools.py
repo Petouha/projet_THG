@@ -13,6 +13,8 @@ def deTLaM(dico):
 
 
 def list_to_graph(lst):
+    if lst is None:
+        return None
     taille = int(math.sqrt(len(lst)))
     graph = np.zeros((taille, taille))
     i = 0
