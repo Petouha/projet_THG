@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, simpledialog,ttk
 from sudoku import *
 from random import *
 
@@ -9,9 +9,13 @@ def validate_input(value):
     return False
 
 # Function to generate a new Sudoku puzzle
-def generate_sudoku(difficulty=0.1, size=3):
+def generate_sudoku(size=3):
     reset_sudoku()
+    difficulty = choose_difficulty()
 
+    if difficulty < 0:
+        return False
+    
     # Generate a random completed Sudoku puzzle
     grid = solve_sudoku(np.zeros((size*size,size*size)))
     
@@ -35,9 +39,11 @@ def generate_sudoku(difficulty=0.1, size=3):
 # Function to solve the current Sudoku puzzle
 def solve():
     # Implement Sudoku solving logic here
-    print(list_to_graph(get_sudoku_numbers()))
     solved = (solve_sudoku(list_to_graph(get_sudoku_numbers())))
-    print(solved)
+    
+    if(solved is None):
+        messagebox.showerror("ERREUR DES VALEURS","Votre sudoku est faux")
+        return False
     
     generate_button.config(state="disabled")
     reset_button.config(state="disabled")
@@ -82,6 +88,41 @@ def get_sudoku_numbers():
 window = tk.Tk()
 window.title("Sudoku Game")
 
+def choose_difficulty():
+    difficulties = ['Easy', 'Medium', 'Difficult']
+    
+    
+    
+    difficulty_var = tk.StringVar(window)
+    difficulty_var.set(None)  # Set default value
+    
+    dialog = tk.Toplevel(window)
+    dialog.title("Choose Difficulty") 
+    
+    label = tk.Label(dialog, text="Select the difficulty level:")
+    label.pack(pady=10)
+    
+    combobox = ttk.Combobox(dialog, values=difficulties, textvariable=difficulty_var, state="readonly")
+    combobox.pack(pady=10)
+    
+    ok_button = tk.Button(dialog, text="OK", command=dialog.destroy)
+    ok_button.pack(pady=10)
+    
+    dialog.wait_window(dialog)
+    
+    result = difficulty_var.get()
+    print(result)
+    if result == 'Easy':
+        return 0.7
+    elif result == 'Medium':
+        return 0.45
+    elif result == 'Difficult':
+        return 0.2
+    else:
+        return -1  # Default to Medium if canceled
+
+
+
 # Create a 9x9 grid of entry widgets
 validate_cmd = window.register(validate_input)
 sudoku_cells = [
@@ -92,11 +133,11 @@ sudoku_cells = [
         ) for j in range(9)
     ] for i in range(9)
 ]
+
 for i in range(9):
     for j in range(9):
-        padx_value = 1 if (j + 1) % 3 == 0 and j < 8 else 0  # Add black strip after every 3 columns
-        pady_value = 1 if (i + 1) % 3 == 0 and i < 8 else 0  # Add black strip after every 3 rows
-        sudoku_cells[i][j].grid(row=i, column=j, sticky="nsew", padx=(padx_value), pady=pady_value)
+        # if i % 3 == 0 and j % 3 == 0:
+        sudoku_cells[i][j].grid(row=i, column=j, sticky="nsew", padx=(1), pady=1)
 
 # Create the buttons
 generate_button = tk.Button(window, text="Generate", command=generate_sudoku)
