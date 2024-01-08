@@ -1,44 +1,33 @@
 import numpy as np
+from tools import deMaTL
+# import os,sys
+# parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+# sys.path.append(parent_dir)
 
-def deMaTL(M):
-    dico = {}
-    for i in range(np.shape(M)[0]):
-        dico[i+1]=[]
-        for (j) in range(np.shape(M)[1]):
-            if(M[i,j]==1 and i!=j):
-                dico[i+1].append(j+1)
-    return dico
+# from sudoku import *
 
 def isSafe(v, graph, colors, c):
-    for i in range(len(graph)):
-        if graph[v][i] == 1 and colors[i] == c:
+    # Vérifier si le sommet v peut être coloré avec la couleur c sans conflit
+    for i in graph[v+1]:
+        if colors[i - 1] == c:
             return False
     return True
 
-def welshPowell2(dico):
-    # Tri du dico de manière décroissante selon la taille, ...
-    sorted_list = sorted(dico.items(),  key=lambda x: len(x[1]), reverse=True)
-    # Initialisation du tableau des couleurs à -1
-    colors = len(dico) * [-1]
-    # Initialisation de la première couleur
-    color = 0
-    # Boucle principale qui parcourt l'ensemble des sommets
+def welshPowell(graph,colors=None):
+    dico = deMaTL(graph)
+    # Tri du dictionnaire par le nombre de successeurs, en ordre décroissant
+    sorted_list = sorted(dico.items(), key=lambda x: len(x[1]), reverse=True)
+    # Initialiser les couleurs de tous les sommets à -1 (aucune couleur) si colors est None
+    if not colors:
+        colors = len(dico) * [-1]
+    # Assigner des couleurs aux sommets
     for i in range(len(sorted_list)):
-        # Continuer si il y a des sommets sans couleurs
-        if -1 in colors:
-            vertex = sorted_list[i][0] - 1
-            if colors[vertex] == -1:
-                # Chercher une couleur sûre pour le sommet
-                for c in range(len(dico)):
-                    if isSafe(vertex, graph, colors, c):
-                        colors[vertex] = c
-                        break
-            # Colorier les sommets non adjacents avec la même couleur
-            for k in range(len(dico)):
-                if isSafe(k, graph, colors, colors[vertex]):
-                    colors[k] = colors[vertex]
-        else:
-            break
+        vertex = sorted_list[i][0]
+        if colors[vertex - 1] == -1:
+            for c in range(len(dico)):
+                if isSafe(vertex - 1, dico, colors, c):
+                    colors[vertex - 1] = c
+                    break
     return colors
 
 graph = np.array([[0, 1, 0, 0, 1, 1, 1], 
@@ -49,12 +38,6 @@ graph = np.array([[0, 1, 0, 0, 1, 1, 1],
     [1, 0, 0, 0, 1, 0, 1], 
     [1, 0, 1, 0, 1, 1, 0 ]])
 
-dico = deMaTL(graph)
-print(dico)
-# for i in range(np.shape(graph)[0]):
-#     list_succ.append(successeurs(graph,i+1))
-# print(list_succ)
+# Application de l'algorithme Welsh-Powell pour la coloration du graphe
+print(welshPowell(graph))
 
-
-
-print(welshPowell2(dico))
