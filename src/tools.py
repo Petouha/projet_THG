@@ -1,6 +1,16 @@
 import numpy as np
 import math
 
+
+def deMaTL(M):
+    dico = {}
+    for i in range(np.shape(M)[0]):
+        dico[i+1]=[]
+        for (j) in range(np.shape(M)[1]):
+            if(M[i,j]==1 and i!=j):
+                dico[i+1].append(j+1)
+    return dico
+
 def deTLaM(dico):
     num_nodes = len(dico)
     M = np.zeros((num_nodes, num_nodes))
