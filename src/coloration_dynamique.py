@@ -33,8 +33,9 @@ def add_sommet(courant, liste_voisins, graphe, colors):
 graphe = {}
 colors = []
 add_sommet(0, [], graphe, colors)
-add_sommet(1, [0], graphe, colors)  # Ajouter un sommet avec le voisin 0
+add_sommet(1, [0], graphe, colors) 
 add_sommet(2,[0,1],graphe,colors)
 add_sommet(3,[0],graphe,colors)
+add_sommet(4,[0,3],graphe,colors)
 print(graphe)  # Afficher le graphe
 print(colors)  # Afficher les couleurs des sommets
