@@ -8,7 +8,7 @@ def validate_input(value):
         return True
     return False
 
-# Function to generate a new Sudoku puzzle
+# Fonction pour générer une nouvelle grille de Sudoku
 def generate_sudoku(size=3):
     reset_sudoku()
     difficulty = choose_difficulty()
@@ -16,10 +16,10 @@ def generate_sudoku(size=3):
     if difficulty < 0:
         return False
     
-    # Generate a random completed Sudoku puzzle
+      # Générer une grille complète de Sudoku aléatoirement
     grid = solve_sudoku(np.zeros((size*size,size*size)))
     
-    # Remove numbers to achieve desired difficulty
+    # Enlever des chiffres pour obtenir la difficulté voulue
     cells_to_remove = int(81 * (1 - difficulty))
     for _ in range(cells_to_remove):
         row, col = randint(0, 8), randint(0, 8)
@@ -27,7 +27,7 @@ def generate_sudoku(size=3):
             row, col = randint(0, 8), randint(0, 8)
         grid[row, col] = -1
 
-    # Display the puzzle in the GUI
+    # Afficher la grille dans l'interface graphique
     for i in range(9):
         for j in range(9):
             value = int(grid[i, j])
@@ -36,11 +36,10 @@ def generate_sudoku(size=3):
                 sudoku_cells[i][j].insert(0, str(value))
                 window.update()
                 window.after(10)
-# Function to solve the current Sudoku puzzle
+# Fonction pour résoudre le Sudoku actuel
 def solve():
-    # Implement Sudoku solving logic here
     solved = (solve_sudoku(list_to_graph(get_sudoku_numbers())))
-    
+    #Si il n'y a pas de solution c'est que le sudoku est faux
     if(solved is None):
         messagebox.showerror("ERREUR DES VALEURS","Votre sudoku est faux")
         return False
@@ -48,6 +47,9 @@ def solve():
     generate_button.config(state="disabled")
     reset_button.config(state="disabled")
     solve_button.config(state="disabled")
+    
+    #Remplir les cases avec la solution
+    
     for i in range(9):
         for j in range(9):
             value = int(solved[i, j])
@@ -61,7 +63,7 @@ def solve():
     solve_button.config(state="normal")
 
 
-# Function to reset the Sudoku grid to empty
+# Fonction pour réinitialiser la grille de Sudoku
 def reset_sudoku():
     generate_button.config(state="disabled")
     reset_button.config(state="disabled")
@@ -79,51 +81,59 @@ def reset_sudoku():
     
     
 
-# Function to get the numbers from the Sudoku grid as a flat list
+# Fonction pour obtenir les numéros de la grille de Sudoku sous forme de liste 
 def get_sudoku_numbers():
     sudoku_numbers = [int(cell.get()) if cell.get() else 0 for row in sudoku_cells for cell in row]
     return sudoku_numbers
 
-# Create the main window
+# Créer la fenêtre principale
 window = tk.Tk()
 window.title("Sudoku Game")
 
 def choose_difficulty():
-    difficulties = ['Easy', 'Medium', 'Difficult']
+    # Définir les niveaux de difficulté disponibles
+    difficulties = ['Facile', 'Moyen', 'Difficile']
     
-    
-    
+    # Variable de contrôle pour stocker la difficulté sélectionnée
     difficulty_var = tk.StringVar(window)
-    difficulty_var.set(None)  # Set default value
+    difficulty_var.set(None)
     
+    # Créer une boîte de dialogue pour choisir la difficulté
     dialog = tk.Toplevel(window)
-    dialog.title("Choose Difficulty") 
+    dialog.title("Choisir la difficulté") 
     
-    label = tk.Label(dialog, text="Select the difficulty level:")
+    # Ajouter une étiquette à la boîte de dialogue
+    label = tk.Label(dialog, text="Sélectionnez le niveau de difficulté :")
     label.pack(pady=10)
     
+    # Ajouter une liste déroulante avec les niveaux de difficulté
     combobox = ttk.Combobox(dialog, values=difficulties, textvariable=difficulty_var, state="readonly")
     combobox.pack(pady=10)
     
+    # Ajouter un bouton OK pour fermer la boîte de dialogue
     ok_button = tk.Button(dialog, text="OK", command=dialog.destroy)
     ok_button.pack(pady=10)
     
+    # Attendre que la boîte de dialogue se ferme
     dialog.wait_window(dialog)
     
+    # Récupérer la difficulté sélectionnée
     result = difficulty_var.get()
     print(result)
-    if result == 'Easy':
+    
+    # Assigner une valeur de poids en fonction de la difficulté choisie
+    if result == 'Facile':
         return 0.7
-    elif result == 'Medium':
+    elif result == 'Moyen':
         return 0.45
-    elif result == 'Difficult':
+    elif result == 'Difficile':
         return 0.2
     else:
-        return -1  # Default to Medium if canceled
+        return -1
 
 
 
-# Create a 9x9 grid of entry widgets
+# Créer une grille 9x9 de champs de saisie
 validate_cmd = window.register(validate_input)
 sudoku_cells = [
     [
@@ -136,18 +146,18 @@ sudoku_cells = [
 
 for i in range(9):
     for j in range(9):
-        # if i % 3 == 0 and j % 3 == 0:
         sudoku_cells[i][j].grid(row=i, column=j, sticky="nsew", padx=(1), pady=1)
 
-# Create the buttons
-generate_button = tk.Button(window, text="Generate", command=generate_sudoku)
-solve_button = tk.Button(window, text="Solve", command=solve)
-reset_button = tk.Button(window, text="Reset", command=reset_sudoku)
 
-# Position the buttons
+# Créer les boutons
+generate_button = tk.Button(window, text="Générer", command=generate_sudoku)
+solve_button = tk.Button(window, text="Résoudre", command=solve)
+reset_button = tk.Button(window, text="Effacer", command=reset_sudoku)
+
+# Positionner les boutons
 generate_button.grid(row=9, column=0, columnspan=3)
 solve_button.grid(row=9, column=3, columnspan=3)
 reset_button.grid(row=9, column=6, columnspan=3)
 
-# Start the GUI event loop
+
 window.mainloop()

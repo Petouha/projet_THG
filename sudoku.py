@@ -59,14 +59,14 @@ def solve_sudoku(graph):
 def is_valid_sudoku(grid):
     size = np.shape(grid)[0]
     for i in range(size):
-        # Check each row
+        # Vérifier chaque ligne
         if not is_valid_group(grid[i, :]):
             return False
-        # Check each column
+        # Vérifier chaque colonne
         if not is_valid_group(grid[:, i]):
             return False
 
-    # Check each 3x3 subgrid
+    # Vérifier chaque sous-grille 3x3
     for i in range(0, size, 3):
         for j in range(0, size, 3):
             if not is_valid_group(grid[i:i+3, j:j+3].flatten()):
@@ -75,5 +75,5 @@ def is_valid_sudoku(grid):
     return True
 
 def is_valid_group(group):
-    group = [num for num in group if num != 0]  # Remove zeros (empty cells)
+    group = [num for num in group if num != 0]  #  Enlever les zéros (cases vides)
     return len(group) == len(set(group))
